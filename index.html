@@ -3,76 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Precios de Quesos</title>
+    <title>Calculadora de Precio de Queso</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
-        input, select, button { margin: 10px; padding: 10px; font-size: 16px; }
-        h1 { margin-top: 20px; font-weight: bold; color: #2572c2; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input, button {
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <h1>Calculadora de Precios de Quesos</h1>
-    <form>
-        <!-- Selección del tipo de venta -->
-        <label for="tipoVenta">Tipo de venta:</label>
-        <select id="tipoVenta">
-            <option value="menor">Por menor</option>
-            <option value="mayor">Por mayor</option>
-        </select><br>
 
-        <!-- Peso del queso -->
-        <label for="pesoTrozo">Peso del trozo (en gramos):</label>
-        <input type="number" id="pesoTrozo" min="750" max="850" placeholder="Ej: 800"><br>
+<div class="container">
+    <h1>Calculadora de Precio y Ganancias de Venta de Queso</h1>
 
-        <!-- Cantidad de quesos -->
-        <label for="cantidad">Cantidad de trozos:</label>
-        <input type="number" id="cantidad" min="1" placeholder="Ej: 10"><br>
+    <label for="peso">Peso del queso (en gramos):</label>
+    <input type="number" id="peso" placeholder="Ingrese el peso entre 750 y 850 gramos" min="750" max="850">
 
-        <!-- Botón de cálculo -->
-        <button type="button" onclick="calcular()">Calcular</button>
-    </form>
+    <label for="cantidad">Cantidad de quesos a vender:</label>
+    <input type="number" id="cantidad" placeholder="Ingrese la cantidad de quesos" min="1">
 
-    <!-- Resultado -->
-    <div id="resultado"></div>
+    <button onclick="calcular()">Calcular</button>
 
-    <script>
-        function calcular() {
-            // Obtener los valores ingresados por el usuario
-            const tipoVenta = document.getElementById('tipoVenta').value;
-            const pesoTrozo = parseInt(document.getElementById('pesoTrozo').value);
-            const cantidad = parseInt(document.getElementById('cantidad').value);
+    <div class="result" id="resultado"></div>
+</div>
 
-            // Validaciones
-            if (isNaN(pesoTrozo) || pesoTrozo < 750 || pesoTrozo > 850) {
-                alert("Por favor, ingresa un peso válido entre 750 y 850 gramos.");
-                return;
-            }
-            if (isNaN(cantidad) || cantidad <= 0) {
-                alert("Por favor, ingresa una cantidad válida.");
-                return;
-            }
+<script>
+    function calcular() {
+        const precioPorKilo = 12500;  // Precio de venta por kilo en pesos chilenos
+        const costoPorKilo = 5000;    // Costo de compra por kilo en pesos chilenos
+        const pesoMinimo = 750;       // Peso mínimo en gramos
+        const pesoMaximo = 850;       // Peso máximo en gramos
 
-            // Precio por kilo
-            const precioPorKilo = 12500; // 12.500 CLP
-
-            // Cálculo del precio por trozo según el peso
-            const precioCompra = (pesoTrozo / 1000) * precioPorKilo; // Precio de compra
-            const precioVenta = tipoVenta === "mayor" 
-                ? precioCompra * 1.2 // Margen del 20% para venta mayorista
-                : precioCompra * 1.5; // Margen del 50% para venta minorista
-
-            // Cálculo de totales
-            const gananciaUnidad = precioVenta - precioCompra;
-            const totalVenta = precioVenta * cantidad;
-            const totalGanancia = gananciaUnidad * cantidad;
-
-            // Mostrar resultado en el HTML
-            document.getElementById('resultado').innerHTML = `
-                <p>Precio por trozo: ${precioVenta.toFixed(2)} CLP</p>
-                <p>Total de venta: ${totalVenta.toFixed(2)} CLP</p>
-                <p>Ganancia total: ${totalGanancia.toFixed(2)} CLP</p>
-            `;
+        // Obtener valores de los inputs
+        let peso = parseFloat(document.getElementById('peso').value);
+        let cantidad = parseInt(document.getElementById('cantidad').value);
+        
+        // Verificar que el peso esté en el rango correcto
+        if (peso < pesoMinimo || peso > pesoMaximo) {
+            alert(`El peso debe estar entre ${pesoMinimo} y ${pesoMaximo} gramos.`);
+            return;
         }
-    </script>
+
+        // Verificar que la cantidad sea válida
+        if (cantidad <= 0) {
+            alert("Por favor ingresa una cantidad válida.");
+            return;
+        }
+
+        // Calcular el precio por unidad (precio de venta)
+        let precioPorUnidad = (peso / 1000) * precioPorKilo;
+
+        // Calcular el precio total por la cantidad
+        let totalVenta = precioPorUnidad * cantidad;
+
+        // Calcular el costo total (costo de compra)
+        let costoTotal = (peso / 1000) * costoPorKilo * cantidad;
+
+        // Calcular la ganancia (diferencia entre precio de venta y costo de compra)
+        let ganancia = totalVenta - costoTotal;
+
+        // Calcular el retorno de ganancia (porcentaje)
+        let retornoGanancia = (ganancia / costoTotal) * 100;
+
+        // Mostrar los resultados
+        document.getElementById('resultado').innerHTML = `
+            <p>Precio por unidad (queso de ${peso}g): $${precioPorUnidad.toFixed(2)} CLP</p>
+            <p>Total por ${cantidad} unidades: $${totalVenta.toFixed(2)} CLP</p>
+            <p>Costo total de compra: $${costoTotal.toFixed(2)} CLP</p>
+            <p>Ganancia total: $${ganancia.toFixed(2)} CLP</p>
+            <p>Retorno de ganancia: ${retornoGanancia.toFixed(2)}%</p>
+        `;
+    }
+</script>
+
 </body>
 </html>
