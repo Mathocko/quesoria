@@ -42,7 +42,13 @@
         }
         gananciaUnidad = precioVenta - precioCompra;
       } else if (tipoVenta === "mayor") {
-        precioVenta = 9500; // Precio fijo por mayor
+        if (cantidad < 15) {
+          precioVenta = 9000;
+        } else if (cantidad < 25) {
+          precioVenta = 8000;
+        } else {
+          precioVenta = 7000;
+        }
         gananciaUnidad = precioVenta - precioCompra;
       }
 
