@@ -28,24 +28,34 @@
   <div id="resultado"></div>
 
   <script>
-    function calcular() {
-      const tipoVenta = document.getElementById("tipoVenta").value;
-      const cantidad = parseInt(document.getElementById("cantidad").value);
-      const precioCompra = 5000;
-      let precioVenta, gananciaUnidad;
+function calcular() {
+    const tipoVenta = document.getElementById("tipoVenta").value;
+    const tamanoQueso = document.getElementById("tamanoQueso").value; // Tamaño seleccionado
+    const cantidad = parseInt(document.getElementById("cantidad").value);
+    const precioCompra = 5000;
+    let precioVenta, gananciaUnidad;
 
-if (tipoVenta === "menor") {
-  const tamanoQueso = document.getElementById("tamanoQueso").value; // Obtenemos el tamaño seleccionado
+    if (tipoVenta === "menor") {
+        if (tamanoQueso === "510") {
+            precioVenta = 7000; // Precio base por menor (510 g)
+        } else if (tamanoQueso === "800") {
+            precioVenta = 10000; // Precio base por menor (800 g)
+        }
+        gananciaUnidad = precioVenta - precioCompra;
+    } else if (tipoVenta === "mayor") {
+        precioVenta = 9500; // Precio fijo por mayor
+    }
 
-  if (tamanoQueso === "510") {
-    precioVenta = 7000; // Precio para 510 gramos
-  } else if (tamanoQueso === "800") {
-    precioVenta = 10000; // Precio para 800 gramos
-  }
-  gananciaUnidad = precioVenta - precioCompra;
-} else if (tipoVenta === "mayor") {
-  precioVenta = 9500; // Precio fijo por mayor
+    const totalVenta = precioVenta * cantidad;
+    const totalGanancia = gananciaUnidad * cantidad;
+
+    document.getElementById("resultado").innerHTML = `
+        <p>Precio por unidad (${tamanoQueso} gramos): ${precioVenta} CLP</p>
+        <p>Total de venta: ${totalVenta} CLP</p>
+        <p>Ganancia total: ${totalGanancia} CLP</p>
+    `;
 }
+
         gananciaUnidad = precioVenta - precioCompra;
       }
 
